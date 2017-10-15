@@ -2,7 +2,8 @@
 module RecurringPattern (
     RecurringPattern(..),
     unitSize,
-    recurringPatternNextStartTime
+    recurringPatternNextStartTime,
+    recurringPatternNextEndTime
 ) where
 
 import Data.Time
@@ -36,8 +37,8 @@ unitSize (MonthOfYear _)        = Month
 --unitSize (WeekOfMonth _)        = Week
 unitSize (NthDay _)             = Day
 unitSize (DayOfMonth _)         = Day
-unitSize (DayOfWeek _)          = Day
-unitSize (ClockTimeOfDay _ _)   = Second
+--unitSize (DayOfWeek _)          = Day
+--unitSize (ClockTimeOfDay _ _)   = Second
 
 recurringPatternNextStartTime :: UTCTime -> UTCTime -> RecurringPattern -> UTCTime
 recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern
@@ -48,6 +49,22 @@ recurringPatternNextStartTime scheduleStartTime currentTime (MonthOfYear n) = mo
 --recurringPatternNextStartTime scheduleStartTime currentTime (NthWeek n)     = nthWeekStartTime scheduleStartTime currentTime n
 recurringPatternNextStartTime scheduleStartTime currentTime (DayOfMonth n)  = dayOfMonthStartTime currentTime n
 recurringPatternNextStartTime scheduleStartTime currentTime (NthDay n)      = nthDayStartTime scheduleStartTime currentTime (toInteger n)
+
+recurringPatternNextEndTime :: UTCTime -> UTCTime -> RecurringPattern -> UTCTime
+recurringPatternNextEndTime scheduleStartTime currentTime recurringPattern =
+    recurringPatternEndTime nextStartTime recurringPattern
+    where   nextStartTime = recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern
+
+recurringPatternEndTime :: UTCTime -> RecurringPattern -> UTCTime
+recurringPatternEndTime currentTime (NthYear 1)     = endOfTime
+recurringPatternEndTime currentTime (NthYear n)     = truncateYear . dateToUTC $ addGregorianYearsClip 1 (utctDay currentTime)
+recurringPatternEndTime currentTime (NthMonth 1)    = endOfTime
+recurringPatternEndTime currentTime (NthMonth n)    = truncateMonth . dateToUTC $ addGregorianMonthsClip 1 (utctDay currentTime)
+recurringPatternEndTime currentTime (MonthOfYear 1) = endOfTime
+recurringPatternEndTime currentTime (MonthOfYear n) = truncateMonth . dateToUTC $ addGregorianMonthsClip 1 (utctDay currentTime)
+recurringPatternEndTime currentTime (NthDay 1)      = endOfTime
+recurringPatternEndTime currentTime (NthDay n)      = dateToUTC $ addDays 1 (utctDay currentTime)
+recurringPatternEndTime currentTime (DayOfMonth n)  = dateToUTC $ addDays 1 (utctDay currentTime)
 
 nthYearStartTime :: UTCTime -> UTCTime -> Integer -> UTCTime
 nthYearStartTime scheduleStartTime currentTime n =

@@ -3,7 +3,8 @@ module TimeUtil (
     dateToUTC,
     truncateYear,
     truncateMonth,
-    truncateDay
+    truncateDay,
+    endOfTime
 ) where
 
 import Data.Time
@@ -27,3 +28,6 @@ truncateWeek :: UTCTime -> UTCTime
 truncateDay :: UTCTime -> UTCTime
 truncateDay time = UTCTime (fromGregorian year month day) 0
     where   (year, month, day) = toGregorian (utctDay time)
+
+endOfTime :: UTCTime
+endOfTime = UTCTime (fromGregorian 9999 21 31) 0
