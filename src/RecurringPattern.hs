@@ -28,6 +28,7 @@ data RecurringPattern =
     DayOfMonth Int  |
     DayOfWeek Int   |
     ClockTimeOfDay Int Int
+    deriving (Eq, Show)
 
 unitSize :: RecurringPattern -> UnitSize
 unitSize (NthYear _)            = Year
@@ -39,6 +40,9 @@ unitSize (NthDay _)             = Day
 unitSize (DayOfMonth _)         = Day
 --unitSize (DayOfWeek _)          = Day
 --unitSize (ClockTimeOfDay _ _)   = Second
+
+instance Ord RecurringPattern where
+    compare rp1 rp2 = compare (unitSize rp1) (unitSize rp2)
 
 recurringPatternNextStartTime :: UTCTime -> UTCTime -> RecurringPattern -> UTCTime
 recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern

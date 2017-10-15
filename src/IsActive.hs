@@ -5,17 +5,14 @@ module IsActive (
 ) where
 
 import Data.Time
-import Data.List (groupBy, sortBy)
+import Data.List (groupBy, sort)
 
 import RecurringPattern
 
 isActive :: UTCTime -> UTCTime -> [RecurringPattern] -> Bool
 isActive scheduleStartTime currentTime recurringPatterns =
-    and . map layerIsActive . groupBy sameUnitSize . sortBy compareUnitSize $ recurringPatterns
+    and . map layerIsActive . groupBy sameUnitSize . sort $ recurringPatterns
         where layerIsActive = or . map (singleIsActive scheduleStartTime currentTime)
-
-compareUnitSize :: RecurringPattern -> RecurringPattern -> Ordering
-compareUnitSize rp1 rp2 = compare (unitSize rp1) (unitSize rp2)
 
 singleIsActive :: UTCTime -> UTCTime -> RecurringPattern -> Bool
 singleIsActive scheduleStartTime currentTime recurringPattern =
