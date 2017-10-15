@@ -2,6 +2,7 @@
 module RecurringPattern (
     RecurringPattern(..),
     unitSize,
+    sameUnitSize,
     recurringPatternNextStartTime,
     recurringPatternNextEndTime
 ) where
@@ -43,6 +44,9 @@ unitSize (DayOfMonth _)         = Day
 
 instance Ord RecurringPattern where
     compare rp1 rp2 = compare (unitSize rp1) (unitSize rp2)
+
+sameUnitSize :: RecurringPattern -> RecurringPattern -> Bool
+sameUnitSize rp1 rp2 = unitSize rp1 == unitSize rp2
 
 recurringPatternNextStartTime :: UTCTime -> UTCTime -> RecurringPattern -> UTCTime
 recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern

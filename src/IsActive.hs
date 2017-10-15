@@ -17,6 +17,3 @@ isActive scheduleStartTime currentTime recurringPatterns =
 singleIsActive :: UTCTime -> UTCTime -> RecurringPattern -> Bool
 singleIsActive scheduleStartTime currentTime recurringPattern =
     recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern == currentTime
-
-sameUnitSize :: RecurringPattern -> RecurringPattern -> Bool
-sameUnitSize rp1 rp2 = unitSize rp1 == unitSize rp2
