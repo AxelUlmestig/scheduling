@@ -4,7 +4,8 @@ module RecurringPattern (
     unitSize,
     sameUnitSize,
     recurringPatternNextStartTime,
-    recurringPatternNextEndTime
+    recurringPatternNextEndTime,
+    isInfiniteLoop
 ) where
 
 import Data.Time
@@ -144,7 +145,7 @@ dayOfMonthStartTime currentTime targetDay =
     if daysUntilNext == 0
     then
         currentTime
-    else 
+    else
         nextOccurrence
     where   nextOccurrence                          = dayOfMonthStartTime possibleNextOccurrence targetDay
             possibleNextOccurrence                  = dateToUTC $ addDays (toInteger daysUntilNext) currentDate
@@ -152,3 +153,17 @@ dayOfMonthStartTime currentTime targetDay =
             (currentYear, currentMonth, currentDay) = toGregorian $ utctDay currentTime
             currentDate                             = utctDay currentTime
             daysInMonth                             = gregorianMonthLength currentYear currentMonth
+
+{-
+ Measures how much time has passed since a start time. If the time exceeds a
+ maximum value then the function will assume it's an infinite loop.
+
+ This limit varies with the UnitSize but is always expressed in seconds.
+ -}
+isInfiniteLoop :: UTCTime -> RecurringPattern -> UTCTime -> Bool
+isInfiniteLoop startTime recurringPattern currentTime
+    | unitSize recurringPattern == Year     = realToFrac (diffUTCTime startTime currentTime) > 10 * 365 * 24 * 60 ^ 2
+    | unitSize recurringPattern == Month    = realToFrac (diffUTCTime startTime currentTime) >      365 * 24 * 60 ^ 2
+    | unitSize recurringPattern == Week     = realToFrac (diffUTCTime startTime currentTime) >  3 *  31 * 24 * 60 ^ 2
+    | unitSize recurringPattern == Day      = realToFrac (diffUTCTime startTime currentTime) >       31 * 24 * 60 ^ 2
+    | unitSize recurringPattern == Second   = realToFrac (diffUTCTime startTime currentTime) >        7 * 24 * 60 ^ 2
