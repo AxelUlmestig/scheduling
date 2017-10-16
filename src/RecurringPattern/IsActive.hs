@@ -1,5 +1,5 @@
 
-module IsActive (
+module RecurringPattern.IsActive (
     isActive,
     singleIsActive
 ) where
@@ -7,7 +7,7 @@ module IsActive (
 import Data.Time
 import Data.List (groupBy, sort)
 
-import RecurringPattern
+import RecurringPattern.RecurringPattern
 
 isActive :: UTCTime -> UTCTime -> [RecurringPattern] -> Bool
 isActive scheduleStartTime currentTime recurringPatterns =

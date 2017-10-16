@@ -8,8 +8,8 @@ import Test.Framework.Providers.HUnit
 import Test.HUnit
 import Data.Time
 
-import RecurringPattern
-import IsActive
+import RecurringPattern.RecurringPattern
+import RecurringPattern.IsActive
 
 isActive1 = assertBool "the 12/3 every second year, 12/3 start year" currentlyActive
     where   currentlyActive     = isActive scheduleStartTime currentTime recurringPatterns

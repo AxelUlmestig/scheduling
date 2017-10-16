@@ -8,8 +8,8 @@ import Test.Framework.Providers.HUnit
 import Test.HUnit
 import Data.Time
 
-import RecurringPattern
-import NextUpdate
+import RecurringPattern.RecurringPattern
+import RecurringPattern.NextUpdate
 
 inactive1 = assertEqual "12/3 every two years, one year too early" expected actual
     where   expected            = UTCTime (fromGregorian 2019 3 12) 0

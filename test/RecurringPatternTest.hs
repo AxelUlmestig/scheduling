@@ -8,7 +8,7 @@ import Test.Framework.Providers.HUnit
 import Test.HUnit
 import Data.Time
 
-import RecurringPattern
+import RecurringPattern.RecurringPattern
 import TimeUtil
 
 startTimeBeforeScheduleStart = assertEqual "start time before schedule start" expected actual

@@ -1,5 +1,5 @@
 
-module NextUpdate (
+module RecurringPattern.NextUpdate (
     nextUpdate
 ) where
 
@@ -7,8 +7,8 @@ import Data.Time
 import Data.List (groupBy, maximumBy, minimumBy, sort, sortBy)
 import Data.Function (on)
 
-import RecurringPattern
-import IsActive
+import RecurringPattern.RecurringPattern
+import RecurringPattern.IsActive
 import TimeUtil
 
 nextUpdate :: UTCTime -> UTCTime -> [RecurringPattern] -> UTCTime
