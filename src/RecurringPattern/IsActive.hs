@@ -10,10 +10,10 @@ import Data.List (groupBy, sort)
 import RecurringPattern.RecurringPattern
 
 isActive :: UTCTime -> UTCTime -> [RecurringPattern] -> Bool
-isActive scheduleStartTime currentTime recurringPatterns =
-    and . map layerIsActive . groupBy sameUnitSize . sort $ recurringPatterns
+isActive scheduleStartTime currentTime =
+    and . map layerIsActive . groupBy sameUnitSize . sort
         where layerIsActive = or . map (singleIsActive scheduleStartTime currentTime)
 
 singleIsActive :: UTCTime -> UTCTime -> RecurringPattern -> Bool
-singleIsActive scheduleStartTime currentTime recurringPattern =
-    recurringPatternNextStartTime scheduleStartTime currentTime recurringPattern == currentTime
+singleIsActive scheduleStartTime currentTime =
+    (== currentTime) . recurringPatternNextStartTime scheduleStartTime currentTime
