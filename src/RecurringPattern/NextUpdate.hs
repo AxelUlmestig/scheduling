@@ -35,7 +35,7 @@ nextStartTime scheduleStartTime currentTime (currentLayer:lowerLayers)   =
     where   earliestInLayer     = minimumBy (compare `on` getStartTime) currentLayer
             getStartTime        = recurringPatternNextStartTime scheduleStartTime currentTime
             startTime           = getStartTime earliestInLayer
-            endTime             = latestEndTime scheduleStartTime currentTime (isInfiniteLoop $ head currentLayer) currentLayer
+            endTime             = recurringPatternNextEndTime scheduleStartTime currentTime earliestInLayer
             nextLayerStartTime  = nextStartTime scheduleStartTime startTime lowerLayers
 
 nextEndTime :: UTCTime -> UTCTime -> [[RecurringPattern]] -> UTCTime
