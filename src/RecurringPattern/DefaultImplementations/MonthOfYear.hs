@@ -15,8 +15,8 @@ instance RecurringPattern MonthOfYear where
     startTime       = nthMonthStartTime
     endTime         = nthMonthEndTime
 
-nthMonthStartTime :: UTCTime -> UTCTime -> MonthOfYear -> UTCTime
-nthMonthStartTime _ currentTime (MonthOfYear n) =
+nthMonthStartTime :: UTCTime -> MonthOfYear -> UTCTime
+nthMonthStartTime currentTime (MonthOfYear n) =
     if monthsUntilNext == 0
     then
         currentTime

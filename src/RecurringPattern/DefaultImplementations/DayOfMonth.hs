@@ -12,7 +12,7 @@ data DayOfMonth = DayOfMonth Integer
 
 instance RecurringPattern DayOfMonth where
     unitSize        = const Year
-    startTime       = const dayOfMonthStartTime
+    startTime       = dayOfMonthStartTime
     endTime         = dayOfMonthEndTime
 
 dayOfMonthStartTime :: UTCTime -> DayOfMonth -> UTCTime

@@ -23,13 +23,13 @@ data UnitSize =
 
 class RecurringPattern a where
     unitSize        :: a -> UnitSize
-    startTime       :: UTCTime -> UTCTime -> a -> UTCTime
+    startTime       :: UTCTime -> a -> UTCTime
     endTime         :: UTCTime -> a -> UTCTime
 
 nextStartTime :: RecurringPattern a => UTCTime -> UTCTime -> a -> UTCTime
 nextStartTime scheduleStartTime currentTime recurringPattern
-    | scheduleStartTime > currentTime   = startTime scheduleStartTime scheduleStartTime recurringPattern
-    | otherwise                         = startTime scheduleStartTime currentTime recurringPattern
+    | scheduleStartTime > currentTime   = startTime scheduleStartTime recurringPattern
+    | otherwise                         = startTime currentTime recurringPattern
 
 nextEndTime :: RecurringPattern a => UTCTime -> UTCTime -> a -> UTCTime
 nextEndTime scheduleStartTime currentTime recurringPattern =
