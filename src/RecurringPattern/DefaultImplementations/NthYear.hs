@@ -14,7 +14,6 @@ instance RecurringPattern NthYear where
     unitSize        = const Year
     startTime       = nthYearStartTime
     endTime         = nthYearEndTime
-    isInfiniteLoop  = nthYearIsInfiniteLoop
 
 nthYearStartTime :: UTCTime -> UTCTime -> NthYear -> UTCTime
 nthYearStartTime _ _ (NthYear 1)                            = endOfTime
@@ -33,6 +32,3 @@ nthYearStartTime scheduleStartTime currentTime (NthYear n)  =
 
 nthYearEndTime _ (NthYear 1)            = endOfTime
 nthYearEndTime currentTime (NthYear n)  = truncateYear . dateToUTC $ addGregorianYearsClip 1 (utctDay currentTime)
-
-nthYearIsInfiniteLoop :: UTCTime -> NthYear -> UTCTime -> Bool
-nthYearIsInfiniteLoop startTime _ currentTime = realToFrac (diffUTCTime startTime currentTime) > 10 * 365 * 24 * 60 ^ 2

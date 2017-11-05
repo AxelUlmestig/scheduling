@@ -14,7 +14,6 @@ instance RecurringPattern MonthOfYear where
     unitSize        = const Year
     startTime       = nthMonthStartTime
     endTime         = nthMonthEndTime
-    isInfiniteLoop  = nthMonthIsInfiniteLoop
 
 nthMonthStartTime :: UTCTime -> UTCTime -> MonthOfYear -> UTCTime
 nthMonthStartTime _ currentTime (MonthOfYear n) =
@@ -30,6 +29,3 @@ nthMonthStartTime _ currentTime (MonthOfYear n) =
 
 nthMonthEndTime _ (MonthOfYear 1)            = endOfTime
 nthMonthEndTime currentTime (MonthOfYear _)  = truncateMonth . dateToUTC $ addGregorianMonthsClip 1 (utctDay currentTime)
-
-nthMonthIsInfiniteLoop :: UTCTime -> MonthOfYear -> UTCTime -> Bool
-nthMonthIsInfiniteLoop startTime _ currentTime = realToFrac (diffUTCTime startTime currentTime) > 10 * 365 * 24 * 60 ^ 2

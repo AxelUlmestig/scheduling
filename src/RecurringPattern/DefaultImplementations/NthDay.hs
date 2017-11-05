@@ -14,7 +14,6 @@ instance RecurringPattern NthDay where
     unitSize        = const Year
     startTime       = nthDayStartTime
     endTime         = nthDayEndTime
-    isInfiniteLoop  = nthDayIsInfiniteLoop
 
 nthDayStartTime :: UTCTime -> UTCTime -> NthDay -> UTCTime
 nthDayStartTime _ _ (NthDay 1)                            = endOfTime
@@ -32,6 +31,3 @@ nthDayStartTime scheduleStartTime currentTime (NthDay n)  =
 
 nthDayEndTime _ (NthDay 1)            = endOfTime
 nthDayEndTime currentTime (NthDay _)  = dateToUTC $ addDays 1 (utctDay currentTime)
-
-nthDayIsInfiniteLoop :: UTCTime -> NthDay -> UTCTime -> Bool
-nthDayIsInfiniteLoop startTime _ currentTime = realToFrac (diffUTCTime startTime currentTime) > 31 * 24 * 60 ^ 2

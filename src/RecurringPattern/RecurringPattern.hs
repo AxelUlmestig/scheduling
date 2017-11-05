@@ -25,7 +25,6 @@ class RecurringPattern a where
     unitSize        :: a -> UnitSize
     startTime       :: UTCTime -> UTCTime -> a -> UTCTime
     endTime         :: UTCTime -> a -> UTCTime
-    isInfiniteLoop  :: UTCTime -> a -> UTCTime -> Bool
 
 nextStartTime :: RecurringPattern a => UTCTime -> UTCTime -> a -> UTCTime
 nextStartTime scheduleStartTime currentTime recurringPattern

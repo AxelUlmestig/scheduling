@@ -14,7 +14,6 @@ instance RecurringPattern DayOfMonth where
     unitSize        = const Year
     startTime       = const dayOfMonthStartTime
     endTime         = dayOfMonthEndTime
-    isInfiniteLoop  = dayOfMonthIsInfiniteLoop
 
 dayOfMonthStartTime :: UTCTime -> DayOfMonth -> UTCTime
 dayOfMonthStartTime _ (DayOfMonth 1)                    = endOfTime
@@ -33,5 +32,3 @@ dayOfMonthStartTime currentTime (DayOfMonth targetDay)  =
 
 dayOfMonthEndTime _ (DayOfMonth 1)            = endOfTime
 dayOfMonthEndTime currentTime (DayOfMonth _)  = dateToUTC $ addDays 1 (utctDay currentTime)
-
-dayOfMonthIsInfiniteLoop startTime _ currentTime = realToFrac (diffUTCTime startTime currentTime) > 31 * 24 * 60 ^ 2

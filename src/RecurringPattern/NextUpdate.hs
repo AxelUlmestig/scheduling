@@ -11,6 +11,8 @@ import RecurringPattern.RecurringPattern
 import RecurringPattern.IsActive
 import TimeUtil
 
+loopLimit = 100 :: Int
+
 nextUpdate :: RecurringPattern a => UTCTime -> UTCTime -> [a] -> UTCTime
 nextUpdate scheduleStartTime currentTime []                 = endOfTime
 nextUpdate scheduleStartTime currentTime recurringPatterns  =
@@ -40,17 +42,13 @@ nextStartTimeInternal scheduleStartTime currentTime (currentLayer:lowerLayers)  
 
 nextEndTimeInternal :: RecurringPattern a => UTCTime -> UTCTime -> [[a]] -> UTCTime
 nextEndTimeInternal scheduleStartTime currentTime =
-    minimum . map getLatestEndTime
-    where   getLatestEndTime    = \recurringPatterns -> calculateEndTime (loopBreaker recurringPatterns) recurringPatterns
-            calculateEndTime    = latestEndTime scheduleStartTime currentTime
-            loopBreaker         = isInfiniteLoop scheduleStartTime . head
+    minimum . map (latestEndTime loopLimit scheduleStartTime currentTime)
 
-latestEndTime :: RecurringPattern a => UTCTime -> UTCTime -> (UTCTime -> Bool) -> [a] -> UTCTime
-latestEndTime scheduleStartTime currentTime isInfiniteLoop recurringPatterns
-    | isInfiniteLoop currentTime            = endOfTime
+latestEndTime :: RecurringPattern a => Int -> UTCTime -> UTCTime -> [a] -> UTCTime
+latestEndTime loopCounter scheduleStartTime currentTime recurringPatterns
+    | loopCounter <= 0                      = endOfTime
     | latestEndTimeInLayer == currentTime   = currentTime
-    | otherwise                             = latestEndTime scheduleStartTime latestEndTimeInLayer isInfiniteLoop recurringPatterns
+    | otherwise                             = latestEndTime (loopCounter - 1) scheduleStartTime latestEndTimeInLayer recurringPatterns
     where   latestEndTimeInLayer    = foldl max currentTime . map getEndTime . filter isRelevant $ recurringPatterns
             isRelevant              = singleIsActive scheduleStartTime currentTime
             getEndTime              = endTime currentTime
-
