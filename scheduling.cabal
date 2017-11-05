@@ -48,6 +48,12 @@ test-suite scheduling-test
                        RecurringPattern.RecurringPattern,
                        RecurringPattern.IsActive,
                        RecurringPattern.NextUpdate,
+                       RecurringPattern.DefaultImplementations,
+                       RecurringPattern.DefaultImplementations.DayOfMonth,
+                       RecurringPattern.DefaultImplementations.MonthOfYear,
+                       RecurringPattern.DefaultImplementations.NthDay,
+                       RecurringPattern.DefaultImplementations.NthMonth,
+                       RecurringPattern.DefaultImplementations.NthYear,
                        RecurringPatternTest,
                        IsActiveTest,
                        NextUpdateTest

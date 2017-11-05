@@ -4,53 +4,53 @@ module RecurringPattern.NextUpdate (
 ) where
 
 import Data.Time
-import Data.List (groupBy, maximumBy, minimumBy, sort, sortBy)
+import Data.List (groupBy, maximumBy, minimumBy, sortBy)
 import Data.Function (on)
 
 import RecurringPattern.RecurringPattern
 import RecurringPattern.IsActive
 import TimeUtil
 
-nextUpdate :: UTCTime -> UTCTime -> [RecurringPattern] -> UTCTime
+nextUpdate :: RecurringPattern a => UTCTime -> UTCTime -> [a] -> UTCTime
 nextUpdate scheduleStartTime currentTime []                 = endOfTime
 nextUpdate scheduleStartTime currentTime recurringPatterns  =
     if isActive scheduleStartTime currentTime recurringPatterns
     then
-        nextEndTime scheduleStartTime currentTime recurringPatternLayers
+        nextEndTimeInternal scheduleStartTime currentTime recurringPatternLayers
     else
-        nextStartTime scheduleStartTime currentTime recurringPatternLayers
+        nextStartTimeInternal scheduleStartTime currentTime recurringPatternLayers
     where recurringPatternLayers = sortByUnitSize recurringPatterns
 
-sortByUnitSize :: [RecurringPattern] -> [[RecurringPattern]]
-sortByUnitSize = groupBy sameUnitSize . sort
+sortByUnitSize :: RecurringPattern a => [a] -> [[a]]
+sortByUnitSize = groupBy sameUnitSize . sortBy compareUnitSize
 
-nextStartTime :: UTCTime -> UTCTime -> [[RecurringPattern]] -> UTCTime
-nextStartTime _ currentTime []                                           = currentTime
-nextStartTime scheduleStartTime currentTime (currentLayer:lowerLayers)   =
-    if nextLayerStartTime < endTime
+nextStartTimeInternal :: RecurringPattern a => UTCTime -> UTCTime -> [[a]] -> UTCTime
+nextStartTimeInternal _ currentTime []                                           = currentTime
+nextStartTimeInternal scheduleStartTime currentTime (currentLayer:lowerLayers)   =
+    if nextLayerStartTime < currentLayerEndTime
     then
         nextLayerStartTime
     else
-        nextStartTime scheduleStartTime endTime (currentLayer:lowerLayers)
+        nextStartTimeInternal scheduleStartTime currentLayerEndTime (currentLayer:lowerLayers)
     where   earliestInLayer     = minimumBy (compare `on` getStartTime) currentLayer
-            getStartTime        = recurringPatternNextStartTime scheduleStartTime currentTime
+            getStartTime        = nextStartTime scheduleStartTime currentTime
             startTime           = getStartTime earliestInLayer
-            endTime             = recurringPatternNextEndTime scheduleStartTime currentTime earliestInLayer
-            nextLayerStartTime  = nextStartTime scheduleStartTime startTime lowerLayers
+            currentLayerEndTime = endTime currentTime earliestInLayer
+            nextLayerStartTime  = nextStartTimeInternal scheduleStartTime startTime lowerLayers
 
-nextEndTime :: UTCTime -> UTCTime -> [[RecurringPattern]] -> UTCTime
-nextEndTime scheduleStartTime currentTime =
+nextEndTimeInternal :: RecurringPattern a => UTCTime -> UTCTime -> [[a]] -> UTCTime
+nextEndTimeInternal scheduleStartTime currentTime =
     minimum . map getLatestEndTime
     where   getLatestEndTime    = \recurringPatterns -> calculateEndTime (loopBreaker recurringPatterns) recurringPatterns
             calculateEndTime    = latestEndTime scheduleStartTime currentTime
             loopBreaker         = isInfiniteLoop scheduleStartTime . head
 
-latestEndTime :: UTCTime -> UTCTime -> (UTCTime -> Bool) -> [RecurringPattern] -> UTCTime
+latestEndTime :: RecurringPattern a => UTCTime -> UTCTime -> (UTCTime -> Bool) -> [a] -> UTCTime
 latestEndTime scheduleStartTime currentTime isInfiniteLoop recurringPatterns
     | isInfiniteLoop currentTime            = endOfTime
     | latestEndTimeInLayer == currentTime   = currentTime
     | otherwise                             = latestEndTime scheduleStartTime latestEndTimeInLayer isInfiniteLoop recurringPatterns
     where   latestEndTimeInLayer    = foldl max currentTime . map getEndTime . filter isRelevant $ recurringPatterns
             isRelevant              = singleIsActive scheduleStartTime currentTime
-            getEndTime              = recurringPatternNextEndTime scheduleStartTime currentTime
+            getEndTime              = endTime currentTime
 

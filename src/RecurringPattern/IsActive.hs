@@ -5,15 +5,15 @@ module RecurringPattern.IsActive (
 ) where
 
 import Data.Time
-import Data.List (groupBy, sort)
+import Data.List (groupBy, sortBy)
 
 import RecurringPattern.RecurringPattern
 
-isActive :: UTCTime -> UTCTime -> [RecurringPattern] -> Bool
+isActive :: RecurringPattern a => UTCTime -> UTCTime -> [a] -> Bool
 isActive scheduleStartTime currentTime =
-    and . map layerIsActive . groupBy sameUnitSize . sort
+    and . map layerIsActive . groupBy sameUnitSize . sortBy compareUnitSize
         where layerIsActive = or . map (singleIsActive scheduleStartTime currentTime)
 
-singleIsActive :: UTCTime -> UTCTime -> RecurringPattern -> Bool
+singleIsActive :: RecurringPattern a => UTCTime -> UTCTime -> a -> Bool
 singleIsActive scheduleStartTime currentTime =
-    (== currentTime) . recurringPatternNextStartTime scheduleStartTime currentTime
+    (== currentTime) . nextStartTime scheduleStartTime currentTime

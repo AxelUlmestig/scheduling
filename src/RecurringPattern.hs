@@ -1,11 +1,8 @@
 
 module RecurringPattern (
     RecurringPattern(..),
-    unitSize,
+    UnitSize(..),
     sameUnitSize,
-    recurringPatternNextStartTime,
-    recurringPatternNextEndTime,
-    isInfiniteLoop,
     isActive,
     singleIsActive,
     nextUpdate

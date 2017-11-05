@@ -11,6 +11,7 @@ import Data.Time
 import RecurringPattern.RecurringPattern
 import RecurringPattern.NextUpdate
 
+{-
 inactive1 = assertEqual "12/3 every two years, one year too early" expected actual
     where   expected            = UTCTime (fromGregorian 2019 3 12) 0
             actual              = nextUpdate scheduleStartTime currentTime recurringPatterns
@@ -73,8 +74,10 @@ active4 = assertEqual "the 12th every month every two years" expected actual
             currentTime         = UTCTime (fromGregorian 2017 3 12) (3 * 60 ^ 2 + 23 * 60)
             scheduleStartTime   = UTCTime (fromGregorian 2017 1 1) (5 * 60 ^ 2 + 11 * 60)
             recurringPatterns   = [NthYear 2, NthMonth 1, DayOfMonth 12]
+            -}
 
 assertions = [
+        {-
         inactive1,
         inactive2,
         inactive3,
@@ -84,6 +87,7 @@ assertions = [
         active2,
         active3,
         active4
+        -}
     ]
 
 labels = ["next update " ++ show n | n <- [1..]]
