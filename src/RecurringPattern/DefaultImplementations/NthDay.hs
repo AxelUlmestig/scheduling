@@ -11,23 +11,23 @@ import TimeUtil
 data NthDay = NthDay Integer UTCTime
 
 instance RecurringPattern NthDay where
-    unitSize        = const Year
+    unitSize        = const Day
     startTime       = nthDayStartTime
     endTime         = nthDayEndTime
 
-nthDayStartTime :: UTCTime -> NthDay -> UTCTime
-nthDayStartTime _ (NthDay 1 _)             = endOfTime
-nthDayStartTime currentTime (NthDay n referencePoint)  =
+nthDayStartTime :: UTCTime -> NthDay -> Maybe UTCTime
+nthDayStartTime currentTime (NthDay 1 _)                = Just currentTime
+nthDayStartTime currentTime (NthDay n referencePoint)   =
     if daysRemainder == 0
     then
-        currentTime
+        Just currentTime
     else
-        nextOccurrence
+        Just nextOccurrence
     where   currentDate     = utctDay currentTime
             daysSinceStart  = diffDays currentDate (utctDay referencePoint)
             daysRemainder   = daysSinceStart `mod` n
             daysUntilNext   = toInteger $ n - daysRemainder
             nextOccurrence  = dateToUTC $ addDays daysUntilNext currentDate
 
-nthDayEndTime _ (NthDay 1 _)            = endOfTime
-nthDayEndTime currentTime (NthDay _ _)  = dateToUTC $ addDays 1 (utctDay currentTime)
+nthDayEndTime _ (NthDay 1 _)            = Nothing
+nthDayEndTime currentTime (NthDay _ _)  = Just . dateToUTC $ addDays 1 (utctDay currentTime)

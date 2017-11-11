@@ -19,7 +19,8 @@ library
   other-modules:       TimeUtil,
                        RecurringPattern.RecurringPattern,
                        RecurringPattern.IsActive,
-                       RecurringPattern.NextUpdate
+                       RecurringPattern.NextUpdate,
+                       RecurringPattern.DefaultImplementations
   build-depends:       base >= 4.7 && < 5,
                        time
   default-language:    Haskell2010

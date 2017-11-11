@@ -11,16 +11,16 @@ import TimeUtil
 data DayOfMonth = DayOfMonth Integer
 
 instance RecurringPattern DayOfMonth where
-    unitSize        = const Year
+    unitSize        = const Day
     startTime       = dayOfMonthStartTime
     endTime         = dayOfMonthEndTime
 
-dayOfMonthStartTime :: UTCTime -> DayOfMonth -> UTCTime
-dayOfMonthStartTime _ (DayOfMonth 1)                    = endOfTime
+dayOfMonthStartTime :: UTCTime -> DayOfMonth -> Maybe UTCTime
+dayOfMonthStartTime _ (DayOfMonth 1)                    = Nothing
 dayOfMonthStartTime currentTime (DayOfMonth targetDay)  =
     if daysUntilNext == 0
     then
-        currentTime
+        Just currentTime
     else
         nextOccurrence
     where   nextOccurrence                          = dayOfMonthStartTime possibleNextOccurrence (DayOfMonth targetDay)
@@ -30,5 +30,5 @@ dayOfMonthStartTime currentTime (DayOfMonth targetDay)  =
             currentDate                             = utctDay currentTime
             daysInMonth                             = gregorianMonthLength currentYear currentMonth
 
-dayOfMonthEndTime _ (DayOfMonth 1)            = endOfTime
-dayOfMonthEndTime currentTime (DayOfMonth _)  = dateToUTC $ addDays 1 (utctDay currentTime)
+dayOfMonthEndTime _ (DayOfMonth 1)            = Nothing
+dayOfMonthEndTime currentTime (DayOfMonth _)  = Just . dateToUTC $ addDays 1 (utctDay currentTime)

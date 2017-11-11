@@ -2,6 +2,7 @@
 module RecurringPattern (
     RecurringPattern(..),
     UnitSize(..),
+    RPWrapper(..),
     sameUnitSize,
     isActive,
     singleIsActive,

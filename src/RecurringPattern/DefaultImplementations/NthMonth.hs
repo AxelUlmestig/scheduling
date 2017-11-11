@@ -11,18 +11,18 @@ import TimeUtil
 data NthMonth = NthMonth Integer UTCTime
 
 instance RecurringPattern NthMonth where
-    unitSize        = const Year
+    unitSize        = const Month
     startTime       = nthMonthStartTime
     endTime         = nthMonthEndTime
 
-nthMonthStartTime :: UTCTime -> NthMonth -> UTCTime
-nthMonthStartTime _ (NthMonth 1 _)                          = endOfTime
+nthMonthStartTime :: UTCTime -> NthMonth -> Maybe UTCTime
+nthMonthStartTime currentTime (NthMonth 1 _)                = Just currentTime
 nthMonthStartTime currentTime (NthMonth n referencePoint)   =
     if monthsUntilNext == 0
     then
-        currentTime
+        Just currentTime
     else
-        nextOccurrence
+        Just nextOccurrence
     where   currentDate                             = utctDay currentTime
             (currentYear, currentMonthInYear, _)    = toGregorian currentDate
             (startYear, startMonthInYear, _)        = toGregorian (utctDay referencePoint)
@@ -31,5 +31,9 @@ nthMonthStartTime currentTime (NthMonth n referencePoint)   =
             monthsUntilNext                         = (startMonth - currentMonth) `mod` n
             nextOccurrence                          = truncateMonth . dateToUTC $ addGregorianMonthsClip monthsUntilNext currentDate
 
-nthMonthEndTime _ (NthMonth 1 _)            = endOfTime
-nthMonthEndTime currentTime (NthMonth _ _)  = truncateMonth . dateToUTC $ addGregorianMonthsClip 1 (utctDay currentTime)
+nthMonthEndTime _ (NthMonth 1 _)            = Nothing
+nthMonthEndTime currentTime (NthMonth _ _)  =
+    Just
+    . truncateMonth
+    . dateToUTC
+    $ addGregorianMonthsClip 1 (utctDay currentTime)

@@ -11,9 +11,9 @@ import RecurringPattern.RecurringPattern
 
 isActive :: RecurringPattern a => UTCTime -> UTCTime -> [a] -> Bool
 isActive scheduleStartTime currentTime =
-    and . map layerIsActive . groupBy sameUnitSize . sortBy compareUnitSize
+    and . map layerIsActive . groupBy sameUnitSize
         where layerIsActive = or . map (singleIsActive scheduleStartTime currentTime)
 
 singleIsActive :: RecurringPattern a => UTCTime -> UTCTime -> a -> Bool
 singleIsActive scheduleStartTime currentTime =
-    (== currentTime) . nextStartTime scheduleStartTime currentTime
+    (== Just currentTime) . nextStartTime scheduleStartTime currentTime

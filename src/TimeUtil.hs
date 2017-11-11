@@ -4,6 +4,7 @@ module TimeUtil (
     truncateYear,
     truncateMonth,
     truncateDay,
+    dawnOfTime,
     endOfTime
 ) where
 
@@ -28,6 +29,9 @@ truncateWeek :: UTCTime -> UTCTime
 truncateDay :: UTCTime -> UTCTime
 truncateDay time = UTCTime (fromGregorian year month day) 0
     where   (year, month, day) = toGregorian (utctDay time)
+
+dawnOfTime :: UTCTime
+dawnOfTime = UTCTime (fromGregorian 1 1 1) 0
 
 endOfTime :: UTCTime
 endOfTime = UTCTime (fromGregorian 9999 21 31) 0
